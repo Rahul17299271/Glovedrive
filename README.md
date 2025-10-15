@@ -1,2 +1,100 @@
-# Glovedrive
-A gesture-controlled car using two ESP32s. A glove with flex sensors wirelessly transmits commands over Wi-Fi to a robot car, enabling intuitive control through hand movements. Built with the Arduino framework, ESPAsyncWebServer, and AsyncTCP libraries.
+# GloveDrive: ESP32 Gesture-Controlled Car
+
+This project allows you to control a two-wheeled robot car using hand gestures. A glove equipped with flex sensors wirelessly transmits commands to the car via Wi-Fi, creating an intuitive and futuristic driving experience.
+
+![Demo GIF of the gesture controlled car]
+
+## How It Works
+
+The system consists of two main ESP32-based parts: a transmitter and a receiver.
+
+* [cite_start]**Transmitter (Glove):** An ESP32 mounted on a glove reads analog data from four flex sensors[cite: 14]. [cite_start]When a sensor is bent past a defined threshold (`FLEX_THRESHOLD`) [cite: 14, 19, 20][cite_start], it sends a corresponding command ("FORWARD", "BACKWARD", etc.) over a TCP connection to the car's IP address[cite: 13, 17, 21].
+* [cite_start]**Receiver (Car):** A second ESP32 on the car chassis hosts a TCP server on port 4080, waiting for a client to connect[cite: 1, 8]. [cite_start]When it receives a command from the glove, it controls an L298N motor driver to move the car accordingly[cite: 6, 7, 9, 10, 11].
+
+## Features
+
+* **Intuitive Control:** Drive a car using simple hand gestures.
+* [cite_start]**Wireless Communication:** Uses Wi-Fi for a reliable connection between the glove and the car[cite: 1, 12].
+* **ESP32 Core:** Leverages the power and built-in Wi-Fi of the ESP32 microcontroller.
+* **Asynchronous Networking:** Employs `AsyncTCP` for efficient, non-blocking communication.
+
+## Components Required
+
+* 2 x ESP32 Development Boards
+* 4 x Flex Sensors
+* 1 x L298N Motor Driver Module
+* 1 x Robot Car Chassis with 2 DC Motors
+* Resistors (4 x 10kΩ for flex sensors, 1 x 220Ω for optional LED)
+* Jumper Wires
+* Power source for the car (e.g., Li-ion batteries, Power Bank)
+* A glove to mount the transmitter components
+
+## Setup and Installation
+
+### 1. Hardware Assembly
+
+**Transmitter (Glove):**
+Wire the four flex sensors to the first ESP32. Each sensor requires a voltage divider circuit (using a 10kΩ resistor) for accurate readings.
+
+| Flex Sensor         | ESP32 Pin |
+| ------------------- | :-------: |
+| Forward             |   [cite_start]GPIO 34 [cite: 14]   |
+| Backward            |   [cite_start]GPIO 35 [cite: 14]   |
+| Clockwise (Right)   |   [cite_start]GPIO 32 [cite: 14]   |
+| Anti-Clockwise (Left) |   [cite_start]GPIO 33 [cite: 14]   |
+
+**Receiver (Car):**
+Connect the second ESP32 to the L298N motor driver.
+
+| L298N Pin | ESP32 Pin |
+| :-------: | :-------: |
+|    IN1    |   [cite_start]GPIO 32 [cite: 2]   |
+|    IN2    |   [cite_start]GPIO 33 [cite: 2]   |
+|    IN3    |   [cite_start]GPIO 18 [cite: 3]   |
+|    IN4    |   [cite_start]GPIO 19 [cite: 3]   |
+|    ENA    |   [cite_start]GPIO 26 [cite: 2]   |
+|    ENB    |   [cite_start]GPIO 27 [cite: 2]   |
+| Optional Connection LED | [cite_start]GPIO 2 [cite: 5] |
+
+### 2. Software Setup
+
+1.  **Install Arduino IDE:** Ensure you have the Arduino IDE and the ESP32 board manager installed.
+2.  **Install Libraries:** From the Arduino Library Manager, install `ESPAsyncWebServer` and its dependency, `AsyncTCP`.
+3.  [cite_start]**Configure Wi-Fi Credentials:** In both `Car_working.ino` and `Glove_working.ino`, update the `ssid` and `password` variables with your Wi-Fi network details[cite: 1, 12].
+
+    ```cpp
+    const char* ssid = "YOUR_WIFI_SSID";
+    const char* password = "YOUR_WIFI_PASSWORD";
+    ```
+
+### 3. Upload the Code
+
+This is a two-step process:
+
+1.  **Upload to Car (Receiver):**
+    * Connect the **car's ESP32** to your computer.
+    * Open `Car_working.ino` and upload the code.
+    * Open the **Serial Monitor** at a baud rate of `115200`.
+    * [cite_start]Wait for it to connect to your Wi-Fi[cite: 4]. It will print its IP address. **Copy this IP address.**
+
+2.  **Upload to Glove (Transmitter):**
+    * Open `Glove_working.ino`.
+    * [cite_start]Update the `serverIP` variable with the IP address you copied from the car's serial monitor[cite: 13].
+
+        ```cpp
+        const char* serverIP = "192.168.X.X"; // <-- The IP address of your Car ESP32
+        ```
+    * Connect the **glove's ESP32** to your computer and upload the code.
+
+## Usage
+
+1.  Power on the car. [cite_start]The car's ESP32 will connect to Wi-Fi and start the TCP server[cite: 8]. [cite_start]An onboard LED on pin 2 will light up when the glove connects[cite: 6].
+2.  Power on the glove. [cite_start]It will connect to the Wi-Fi and then to the car's server[cite: 15, 17].
+3.  Control the car by bending your fingers:
+    * [cite_start]**Bend front finger:** Move Forward [cite: 19]
+    * [cite_start]**Bend back finger:** Move Backward [cite: 19]
+    * [cite_start]**Bend clockwise finger:** Turn Right [cite: 20]
+    * [cite_start]**Bend anti-clockwise finger:** Turn Left [cite: 20]
+    * [cite_start]**Keep hand straight:** Stop [cite: 20]
+
+[cite_start]A `delay(2000)` is present in the glove's code, so there is a 2-second interval between commands[cite: 21]. You can adjust this value for more responsive control.
