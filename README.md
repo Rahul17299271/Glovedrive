@@ -92,4 +92,4 @@ This is a two-step process:
     * **Bend anti-clockwise finger:** Turn Left
     * **Keep hand straight:** Stop
 
-[cite_start]A `delay(2000)` is present in the glove's code, so there is a 2-second interval between commands[cite: 21]. You can adjust this value for more responsive control.
+A `delay(2000)` is present in the glove's code, so there is a 2-second interval between commands. You can adjust this value for more responsive control.
