@@ -91,10 +91,10 @@ This is a two-step process:
 1.  Power on the car. [cite_start]The car's ESP32 will connect to Wi-Fi and start the TCP server[cite: 8]. [cite_start]An onboard LED on pin 2 will light up when the glove connects[cite: 6].
 2.  Power on the glove. [cite_start]It will connect to the Wi-Fi and then to the car's server[cite: 15, 17].
 3.  Control the car by bending your fingers:
-    * [cite_start]**Bend front finger:** Move Forward [cite: 19]
-    * [cite_start]**Bend back finger:** Move Backward [cite: 19]
-    * [cite_start]**Bend clockwise finger:** Turn Right [cite: 20]
-    * [cite_start]**Bend anti-clockwise finger:** Turn Left [cite: 20]
-    * [cite_start]**Keep hand straight:** Stop [cite: 20]
+    * **Bend front finger:** Move Forward
+    * **Bend back finger:** Move Backward
+    * **Bend clockwise finger:** Turn Right
+    * **Bend anti-clockwise finger:** Turn Left
+    * **Keep hand straight:** Stop 
 
 [cite_start]A `delay(2000)` is present in the glove's code, so there is a 2-second interval between commands[cite: 21]. You can adjust this value for more responsive control.
